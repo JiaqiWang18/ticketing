@@ -33,7 +33,10 @@ router.post(
     await user.save();
 
     // generate jwt
-    const userJwt = jwt.sign({ id: user.id, email: user.email }, 'asdf');
+    const userJwt = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_KEY!
+    );
     req.session = { jwt: userJwt };
     res.status(201).send(user);
   }
