@@ -9,12 +9,12 @@ import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
 
 const app = express();
-app.set('trust proxy', true);
+app.set('trust proxy', true); // trust ingress nginx proxy
 app.use(express.json());
 app.use(
   cookieSession({
     signed: false,
-    secure: true,
+    secure: process.env.NODE_ENV !== 'test',
   })
 );
 
