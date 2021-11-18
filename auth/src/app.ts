@@ -1,8 +1,8 @@
 import express from 'express';
 import 'express-async-errors';
 import cookieSession from 'cookie-session';
-import { NotFoundError } from './error/not-found-error';
-import { errorHandler } from './middlewares/error-handler';
+import { NotFoundError } from '@jwmodules/common';
+import { errorHandler } from '@jwmodules/common';
 import { currentUserRouter } from './routes/current-user';
 import { signinRoouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
