@@ -1,8 +1,8 @@
 import express from 'express';
 import 'express-async-errors';
 import cookieSession from 'cookie-session';
-import { NotFoundError } from '@jwmodules/common';
-import { errorHandler } from '@jwmodules/common';
+import { NotFoundError, currentUser, errorHandler } from '@jwmodules/common';
+import { createTicketRouter } from './routes/new';
 
 const app = express();
 app.set('trust proxy', true); // trust ingress nginx proxy
@@ -13,6 +13,8 @@ app.use(
     secure: process.env.NODE_ENV !== 'test',
   })
 );
+app.use(currentUser);
+app.use(createTicketRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();
