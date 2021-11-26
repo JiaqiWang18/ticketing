@@ -20,6 +20,7 @@ router.post(
   requireAuth,
   [
     body('ticketId')
+      .not()
       .isEmpty()
       .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
       .withMessage('TicketId must be provided'),
