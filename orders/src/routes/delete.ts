@@ -5,7 +5,9 @@ import {
   requireAuth,
 } from '@jwmodules/common';
 import express, { Request, Response } from 'express';
+import { OrderCancelledPublisher } from '../../events/publishers/order-cancelled-publisher';
 import { Order } from '../models/order';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -22,6 +24,13 @@ router.delete(
     }
     order.status = OrderStatus.Cancelled;
     await order.save();
+    // publish order cancelled event
+    new OrderCancelledPublisher(natsWrapper.client).publish({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
     res.status(204).send(order);
   }
 );
