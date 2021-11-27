@@ -1,6 +1,5 @@
 import { OrderStatus } from '@jwmodules/common';
 import mongoose from 'mongoose';
-import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { Order } from './order';
 
 interface TicketAttrs {
@@ -46,6 +45,19 @@ const ticketSchema = new mongoose.Schema(
   }
 );
 
+ticketSchema.set('versionKey', 'version');
+//ticketSchema.plugin(updateIfCurrentPlugin);
+
+/*
+ * Find record with the previous version
+ */
+ticketSchema.pre('save', function (done) {
+  this.$where = {
+    version: this.get('version') - 1,
+  };
+  done();
+});
+
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
   const { id, ...rest } = attrs;
   return new Ticket({
@@ -60,9 +72,6 @@ ticketSchema.statics.findByEvent = (event: { id: string; version: number }) => {
     version: event.version - 1,
   });
 };
-
-ticketSchema.set('versionKey', 'version');
-ticketSchema.plugin(updateIfCurrentPlugin);
 
 ticketSchema.methods.isReserved = async function () {
   // this === the ticket document
