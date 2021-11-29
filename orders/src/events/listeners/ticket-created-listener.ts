@@ -8,6 +8,7 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   readonly queueGroupName = queueGroupName;
 
   async onMessage(data: TicketCreatedEvent['data'], msg: Message) {
+    // save the ticket to order's database
     const { title, price, id } = data;
     const ticket = Ticket.build({ title, price, id });
     await ticket.save();

@@ -66,6 +66,9 @@ ticketSchema.statics.build = (attrs: TicketAttrs) => {
   });
 };
 
+/*
+ * Find ticket of a previous version for OCC purpose
+ */
 ticketSchema.statics.findByEvent = (event: { id: string; version: number }) => {
   return Ticket.findOne({
     _id: event.id,
@@ -73,6 +76,9 @@ ticketSchema.statics.findByEvent = (event: { id: string; version: number }) => {
   });
 };
 
+/*
+ * Check if a ticket is available for purchase
+ */
 ticketSchema.methods.isReserved = async function () {
   // this === the ticket document
   const existingOrder = await Order.findOne({
