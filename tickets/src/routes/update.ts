@@ -5,6 +5,7 @@ import {
   requireAuth,
   validateRequest,
   NotAuthorizedError,
+  BadRequestError,
 } from '@jwmodules/common';
 import { Ticket } from '../models/ticket';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
@@ -26,6 +27,10 @@ router.put(
     const ticket = await Ticket.findById(req.params.id);
     if (!ticket) {
       throw new NotFoundError();
+    }
+    // lock down ticket if an active order exists
+    if (ticket.orderId) {
+      throw new BadRequestError('Cannot edit a reserved ticket');
     }
     // throw error if user is not creator of ticket
     if (ticket.userId !== req.currentUser!.id) {
