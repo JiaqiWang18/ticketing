@@ -46,3 +46,12 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: jiaqiwang118/expiration
+      #image: us.gcr.io/ticketing-dev-331717/expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
