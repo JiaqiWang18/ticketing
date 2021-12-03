@@ -7,6 +7,9 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
   readonly subject = Subjects.TicketUpdated;
   readonly queueGroupName = queueGroupName;
 
+  /*
+   * Listener to update the ticket info stored in order
+   */
   async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
     // update the ticket
     const ticket = await Ticket.findByEvent(data);
