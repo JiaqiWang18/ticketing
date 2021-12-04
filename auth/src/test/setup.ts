@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { app } from '../app';
 
 let mongo: any;
+jest.setTimeout(50000);
 
 beforeAll(async () => {
   process.env.JWT_KEY = 'test_jwt';
