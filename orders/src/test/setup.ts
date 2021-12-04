@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 
 // mock nats
 jest.mock('../nats-wrapper');
+jest.setTimeout(50000);
 
 let mongo: any;
 
