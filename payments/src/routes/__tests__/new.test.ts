@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Order } from '../../models/order';
 import { OrderStatus } from '@jwmodules/common';
 import { stripe } from '../../stripe';
+import { Payment } from '../../models/payment';
 
 it('returns a 404 when purchasing an order DNE', async () => {
   await request(app)
@@ -86,4 +87,11 @@ it('returns a 204 with valid inputs', async () => {
   });
   expect(stripeCharge).toBeDefined();
   expect(stripeCharge!.currency).toEqual('usd');
+
+  // check if payment saved
+  const payment = await Payment.findOne({
+    orderId: order.id,
+    stripeId: stripeCharge!.id,
+  });
+  expect(payment).not.toBeNull();
 });
