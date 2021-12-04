@@ -34,13 +34,13 @@ afterAll(async () => {
 // global sign in method to make it easy to auth
 
 declare global {
-  var signin: () => string[];
+  var signin: (id?: string) => string[];
 }
 
-global.signin = () => {
+global.signin = (id?: string) => {
   // Build JWT payload {id, email}
   const payload = {
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: id || new mongoose.Types.ObjectId().toHexString(),
     email: 'test@test.com',
   };
   // Create the JWT!
