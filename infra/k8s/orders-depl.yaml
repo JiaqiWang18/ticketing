@@ -26,7 +26,10 @@ spec:
             - name: NATS_CLUSTER_ID
               value: ticketing
             - name: MONGO_URI
-              value: 'mongodb://orders-mongo-srv:27017/orders'
+              valueFrom:
+                secretKeyRef:
+                  name: orders-mongo
+                  key: ORDERS_MONGO
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
