@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    #paths:
-    # - 'client/**'
+    paths:
+      - 'client/**'
 
 env:
   PROJECT_ID: ticketing-334302

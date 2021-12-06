@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-    #paths:
-    # - 'expiration/**'
+    paths:
+      - 'expiration/**'
 
 env:
   PROJECT_ID: ticketing-334302
