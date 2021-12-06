@@ -45,6 +45,6 @@ jobs:
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |-
-          gcloud container clusters get-credentials ticketing
+          gcloud container clusters get-credentials ticketing --zone=us-east1-b
           kubectl rollout restart deployment/auth-depl
           kubectl get services -o wide
