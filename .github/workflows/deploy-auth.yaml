@@ -1,4 +1,4 @@
-name: deploy-auth
+name: Build and Deploy Auth Service to GKE
 
 on:
   push:
@@ -6,19 +6,44 @@ on:
       - master
     paths:
       - 'auth/**'
+
+env:
+  PROJECT_ID: ticketing-334302
+  GKE_CLUSTER: ticketing # Add your cluster name here.
+  GKE_ZONE: us-east1-b # Add your cluster zone here.
+  DEPLOYMENT_NAME: ticketing # Add your deployment name here.
+  IMAGE: static-site
+
 jobs:
-  build:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
+    environment: production
+
     steps:
-      - uses: actions/checkout@v2
-      - run: cd auth && docker build -t jiaqiwang118/auth .
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ticketing-334302
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - run: cd client && docker build -t jiaqiwang118/client .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push jiaqiwang118/auth
-      - uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - run: doctl kubernetes cluster kubeconfig save ticketing
-      - run: kubectl rollout restart deployment auth-depl
+      - run: docker push jiaqiwang118/client
+
+      # Deploy the Docker image to the GKE cluster
+      - name: Deploy
+        run: |-
+          kubectl rollout restart deployment/auth-depl
+          kubectl get services -o wide
