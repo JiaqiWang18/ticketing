@@ -35,15 +35,16 @@ jobs:
       - run: |-
           gcloud --quiet auth configure-docker
 
-      - run: cd client && docker build -t jiaqiwang118/client .
-      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push jiaqiwang118/client
+      #- run: cd client && docker build -t jiaqiwang118/client .
+      #- run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #  env:
+      #    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #- run: docker push jiaqiwang118/client
 
       # Deploy the Docker image to the GKE cluster
       - name: Deploy
         run: |-
+          gcloud container clusters get-credentials ticketing
           kubectl rollout restart deployment/auth-depl
           kubectl get services -o wide
