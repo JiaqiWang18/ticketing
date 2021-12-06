@@ -5,7 +5,7 @@ on:
     branches:
       - master
     #paths:
-     # - 'auth/**'
+    # - 'auth/**'
 
 env:
   PROJECT_ID: ticketing-334302
@@ -34,8 +34,9 @@ jobs:
         run: gcloud --quiet auth configure-docker
 
       - name: Build Docker Container
-        run: cd client && docker build -t jiaqiwang118/client .
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        run: |-
+          cd client && docker build -t jiaqiwang118/client .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
