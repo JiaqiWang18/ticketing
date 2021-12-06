@@ -35,14 +35,14 @@ jobs:
 
       - name: Build Docker Container
         run: |-
-          cd client && docker build -t jiaqiwang118/client .
+          cd auth && docker build -t jiaqiwang118/auth .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push to Docker Hub
-        run: docker push jiaqiwang118/client
+        run: docker push jiaqiwang118/auth
 
       - name: Deploy to GKE
         run: |-
