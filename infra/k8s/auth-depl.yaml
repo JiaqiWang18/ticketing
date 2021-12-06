@@ -15,7 +15,6 @@ spec:
       containers:
         - name: auth
           image: jiaqiwang118/auth
-          #image: us.gcr.io/ticketing-dev-331717/auth
           env:
             - name: MONGO_URI
               valueFrom:
