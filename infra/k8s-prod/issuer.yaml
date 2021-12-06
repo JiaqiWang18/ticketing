@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   acme:
-    # The ACME server URL
+    # The ACME server URL,prod
     server: https://acme-v02.api.letsencrypt.org/directory
     # Email address used for ACME registration
     email: jiaqijacky.wang@gmail.com
