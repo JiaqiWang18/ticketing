@@ -1,24 +1,51 @@
-name: deploy-orders
+name: Build and Deploy Orders Service to GKE
 
 on:
   push:
     branches:
       - master
-    paths:
-      - 'orders/**'
+    #paths:
+    # - 'orders/**'
+
+env:
+  PROJECT_ID: ticketing-334302
+  GKE_CLUSTER: ticketing # Add your cluster name here.
+  GKE_ZONE: us-east1-b # Add your cluster zone here.
+  DEPLOYMENT_NAME: ticketing # Add your deployment name here.
+  IMAGE: static-site
+
 jobs:
-  build:
+  deploy-orders:
+    name: Deploy Orders Service
     runs-on: ubuntu-latest
+    environment: production
+
     steps:
-      - uses: actions/checkout@v2
-      - run: cd orders && docker build -t jiaqiwang118/orders .
-      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Init gcloud CLI
+        uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ticketing-334302
+
+      - name: Config Docker
+        run: gcloud --quiet auth configure-docker
+
+      - name: Build Docker Container
+        run: |-
+          cd orders && docker build -t jiaqiwang118/orders .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push jiaqiwang118/orders
-      - uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - run: doctl kubernetes cluster kubeconfig save ticketing
-      - run: kubectl rollout restart deployment orders-depl
+
+      - name: Push to Docker Hub
+        run: docker push jiaqiwang118/orders
+
+      - name: Deploy to GKE
+        run: |-
+          gcloud container clusters get-credentials ticketing --zone=us-east1-b
+          kubectl rollout restart deployment/orders-depl
+          kubectl get services -o wide
