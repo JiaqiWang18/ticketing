@@ -29,6 +29,8 @@ jobs:
         with:
           service_account_key: ${{ secrets.GKE_SA_KEY }}
           project_id: ticketing-334302
+
+      - name: Config Docker
         run: gcloud --quiet auth configure-docker
 
       - name: Build Docker Container
