@@ -24,7 +24,7 @@ build:
       #image: us.gcr.io/ticketing-dev-331717/client
       context: client
       docker:
-        dockerfile: Dockerfile
+        dockerfile: Dockerfile.dev
       sync:
         manual:
           - src: '**/*.js'
