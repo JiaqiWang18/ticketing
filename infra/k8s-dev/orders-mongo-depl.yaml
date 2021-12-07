@@ -12,9 +12,16 @@ spec:
       labels:
         app: orders-mongo
     spec:
+      volumes:
+        - name: orders-mongo-storage
+          persistentVolumeClaim:
+            claimName: orders-mongo-pvc
       containers:
         - name: orders-mongo
           image: mongo
+          volumeMounts:
+            - name: orders-mongo-storage
+              mountPath: /data/db
 ---
 apiVersion: v1
 kind: Service

@@ -12,9 +12,16 @@ spec:
       labels:
         app: payments-mongo
     spec:
+      volumes:
+        - name: payments-mongo-storage
+          persistentVolumeClaim:
+            claimName: payments-mongo-pvc
       containers:
         - name: payments-mongo
           image: mongo
+          volumeMounts:
+            - name: payments-mongo-storage
+              mountPath: /data/db
 ---
 apiVersion: v1
 kind: Service
